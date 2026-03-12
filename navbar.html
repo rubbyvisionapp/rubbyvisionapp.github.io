@@ -1,17 +1,23 @@
 <nav>
     <div id="head-inner">
-        <a href="/" style="display: block">
-            <img src="/assets/img/Logo.png" alt="MoonlightBay Plus" height="32">
+        <a href="/">
+            <img src="/assets/img/Logo.png" alt="MoonlightBay Plus" class="nav-logo">
         </a>
     </div>
     
-    <div>
+    <div class="nav-container">
         <ul class="nav-links">
             <li><a href="/">TV</a></li>
             <li><a href="/radio/">RADIO</a></li>
             <li><a href="/video/">VOD</a></li>
             <li><a href="/news/">NEWS</a></li>
-            <li><a href="/menu/">MENU</a></li>
+            <li class="dropdown">
+                <a href="/menu/">MENU <i class="arrow-down"></i></a>
+            </li>
         </ul>
+    </div>
+    
+    <div class="nav-right">
+        <a href="/download" class="btn-download">DOWNLOAD APPS</a>
     </div>
 </nav>
