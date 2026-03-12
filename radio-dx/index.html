@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+          <meta charset="utf-8">
+          <title>MoonlightBay Player</title>
+          <meta name="description" content="Dengarkan AM dan SW radio dengan gratis dan praktis.">
+          <meta name="author" content="MoonlightBay Plus">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no,">
+          <meta name="keywords" content="moonlightbay player, fm radio, am radio, sw radio, radio, radio streaming, radio player, streaming radio indonesia, radio online indonesia, prambors, genfm, iswara, mustangfm, mostradio, elshinta, sonora fm, jakarta, bandung, semarang, jogja, surabaya, bali" />
+          <link rel="apple-touch-icon" href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjsoNR1LRJXf23Ipye0Z_JSn8JSwq7DEau94jdJsmByeX1ftePeV4C7bWRuX6IrthhUGXhzkCIF93SOe6g7dx3F_m7H4Hm1VCmW_Lyfj97NRvs9upIVnCmLhqbwqYNUXKLEl6uYbfn8SVGSjwmB4AYIKkHOiO3bRm9igSi7k41xj_PE3UNVUF1OCFh44cuz/s624/d79x1zt-ce1a98f2-2213-42a5-a71b-8b15c64ce713%20(1).png">
+          <meta name="apple-mobile-web-app-capable" content="yes">
+          <meta name="apple-mobile-web-app-status-bar-style" content="default">
+          <meta name="apple-mobile-web-app-title" content="Radio">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+          <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+          <link href="https://fonts.cdnfonts.com/css/sf-pro-display" rel="stylesheet">
+      <!-- Interface -->
+<style>
+    :root {
+    --bg-color: #f0f0f5;
+    --card-bg: rgba(255, 255, 255, 0.8);
+    --text-color: #000;
+    --menu-bg: rgba(255, 255, 255, 0.85);
+    }
+
+    body {
+      font-family: "SF Pro Display";
+      background: #f2f2f2;
+      color: #000;
+      text-align: center;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      flex-direction: column;
+      transition: background-color 0.5s ease, color 0.5s ease; /* Animasi halus */
+    }
+
+    /* Warna Dark Mode */
+    body.dark-mode {
+      --bg-color: #121212;
+      --card-bg: rgba(30, 30, 30, 0.8);
+      --text-color: #fff;
+      --menu-bg: rgba(40, 40, 40, 0.9);
+    }
+
+    .dark-mode {
+      background: #000;
+      color: #fff;
+      .signal-dot {background-color: #ffffffbf !important;}
+      .signal-dot.active {background-color: #fff !important;}
+      .screen {background-color: #1c1c1e !important;}
+      .dock {background-color: rgba(28, 28, 28, 0.45) !important;}
+      .btn {color: #ffff !important;}
+      .band {background: #1c1c1e; border: none !important;}
+      .powerbtn {background: #1c1c1e; border: none !important;}
+      .powerbtn:hover {background-color: #464646 !important;}
+      .dropbtn {background: #1c1c1e; border: none !important;}
+      .dropbtn:hover {background-color: #464646 !important;}
+      .dropdown-content {background: rgba(42,42,42,0.87) !important;}
+      .dropdown-content a {color: white; !important;}
+      .dropdown-content i {color: white; !important;}
+      .dropdown-content button {color: white; !important;}
+      .dropdown a:hover {background-color: #4d4d4d;}
+      .toggle-dropdown {background: #3f3f3f; color: white !important;}
+      .toggle-dropdown:active {background-color: #3a3a3a; color: #fff !important;}
+      .channel-select {color: #ffff !important;}
+      select option {background-color: rgba(6, 6, 6, 0.75); color: #fff !important}
+      ::selection {color: #fff !important}
+      ::-moz-selection {color: #fff !important}
+    }
+
+    button, .dropbtn, .toggle-dropdown, .control-btn {
+      -webkit-tap-highlight-color: transparent; /* Hapus kotak abu-abu bawaan iOS */
+      cursor: pointer;
+      transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+      outline: none;
+    }
+
+    /* Animasi klik ala iOS (Haptic Feel) */
+    button:active, .dropbtn:active, .toggle-dropdown:active {
+      transform: scale(0.9); /* Efek membal saat ditekan */
+    }
+
+    .screen {
+      display: flex;
+      border-radius: 30px;
+      background-color: #fcfcfc;
+      height: 209px;
+      width: 95%;
+      margin: 20px auto;
+      flex-wrap: wrap;
+      flex-direction: column;
+      justify-content: flex-end;
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); /* Animasi halus */
+    }
+
+    .radio-branding {
+      position: absolute;
+      top: 34px;
+      left: 25px;
+      margin: 14px;
+      font-size: 35px;
+      font-weight: 800;
+    }
+    /* Simple Signal Bars (5 dots) */
+    .signal-dots {
+      margin: 10px;
+      position: absolute;
+      top: 50px; /* Top right */
+      right: 80px; /* Adjusted to top right */
+      display: flex;
+      gap: 2px; /* Gap between dots */
+    }
+
+    .signal-dot {
+      width: 8px;
+      height: 8px;
+      background-color: #000000bf; /* Default off */
+      border-radius: 50%; /* Circular dots */
+      opacity: 0.3; /* Dimmed when off */
+    }
+
+    .signal-dot.active {
+      opacity: 1; /* Fully visible when active */
+      background-color: #000; /* Black for active signal */
+    }
+
+    .freq-display {
+      font-size: 105px;
+      font-weight: 650;
+    }
+
+    .freq-display sup {
+      font-family: "Montserrat";
+      font-size: 25px;
+      font-weight: 450;
+      vertical-align: 0%;
+    }
+
+    .band-type {
+      font-size: 18px;
+      font-weight: 350;
+    }
+
+    .channel-name {
+      font-size: 18px;
+      font-weight: 600;
+    }
+  
+    .channel-info {
+      font-size: 18px;
+      font-weight: 500;
+    }
+
+    .marquee-content {
+      display: block;       /* Supaya bisa di-center */
+      width: 100%;          /* Memenuhi wadah */
+      text-align: center;   /* Default: TENGAH */
+      white-space: nowrap;  /* Jangan turun baris */
+      will-change: transform; 
+      padding-left: 0;      /* Reset padding */
+      animation: none;      /* Default: DIAM (Penting!) */
+    }
+
+    .marquee-wrapper {
+      width: 90%; /* Beri jarak kiri kanan */
+      max-width: 280px; /* Batasi lebar maksimal agar tidak terlalu lebar di layar besar */
+      height: 26px; /* Tinggi tetap */
+      margin: 0 auto; /* Posisi tengah */
+      position: relative;
+      overflow: hidden; /* Potong teks yang lewat */
+      white-space: nowrap;
+      /* Masking gradasi (Opsional) */
+      -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+      mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+    }
+
+    /* Animasi hanya jalan jika class .scrolling aktif */
+    .scrolling {
+      display: inline-block !important;
+      width: auto !important; /* Lepas width 100% */
+      text-align: left !important;
+      padding-left: 100%;     /* Jarak start animasi */
+      /* Animasi didefinisikan di sini, tapi durasinya diatur JS */
+      animation-name: samsungScroll;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+    }
+
+    @keyframes samsungScroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-100%); }
+    }
+
+/* Animasi Running Text */
+    @keyframes marquee {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(-100%, 0); }
+      }
+  
+    audio {
+      display: none;
+    }
+
+    .btn {
+      margin: 7px 19px;
+      padding: none;
+      border: none;
+      outline: 1px;
+      background: none;
+      font-size: 40px;
+      color: #000;
+      cursor: pointer;
+      transition: transform 0.3s;
+      -webkit-transition: transform 0.3s;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); /* Animasi halus */
+    }
+
+    .btn:active {
+      color: #0080ff;
+      transform: scale(0.9);
+      -webkit-color: #0080ff;
+      -webkit-transform: scale(0.9);
+    }
+
+    .dock {
+      display: flex;
+      gap: 4px;
+      background-color: rgba(195, 195, 195, 0.45) !important;
+      backdrop-filter: blur(7px);
+      border-radius: 38px;
+      padding: 20px;
+      box-shadow: 0px 0.5px 1px rgba(0, 0, 0, 0.1), inset 0px 0px 8px 0px rgb(140 140 140 / 50%), 0px 0px 0px 0.5px rgba(0, 0, 0, 0.12);
+      width: 330px;
+      max-width: 420px;
+      margin: 0 auto;
+      box-sizing: border-box;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .dock:active {
+      transform: scale(0.98);
+    }
+
+    #channelDropdown {
+    /* ... properti yang sudah ada ... */
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+
+/* Saat dropdown aktif */
+    #channelDropdown[style*="block"] {
+      animation: slideDownFade 0.3s forwards;
+    }
+
+    @keyframes slideDownFade {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .toggle-dropdown {
+      background: #f2f2f2;
+      margin: 0px;
+      color: black;
+      padding: 10px 15px;
+      font-family: "SF Pro Display";
+      font-weight: 500;
+      font-size: 17px;
+      border: none;
+      border-radius: 64px;
+      transition: transform 0.3s;
+      cursor: pointer;
+      width: 100%;
+      box-shadow: 0px 0.5px 1px rgba(0, 0, 0, 0.1);
+      box-sizing: border-box;
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); /* Animasi halus */
+    }
+
+    .toggle-dropdown:active {
+      background-color: #fff;
+      color: #0080ff;
+      transform: scale(0.9);
+      -webkit-color: #0080ff;
+      -webkit-transform: scale(0.9);
+    }
+
+    .channel-select {
+      text-align-last: center;
+      width: 100%;
+      height: 34px;
+      margin-top: 15px;
+      border-radius: 100px;
+      padding: 6px;
+      text-align: center;
+      font-family: "SF Pro Display";
+      font-size: 1rem;
+      appearance: none;
+      background-color: rgba(0, 0, 0, 0) !important;
+      color: #0080ff;
+      font-size: 16px;
+      cursor: pointer;
+      -webkit-appearance: none; /* Remove default dropdown arrow for custom styling */
+      -moz-appearance: none;
+      appearance: none;
+      border: 2px solid #ffff;
+      background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23ffffff%22%20d%3D%22M287%2C197.6l-14.2%2C14.2l-123.6%2C-123.6l-123.6%2C123.6l-14.2%2C-14.2L146.4%2C63.2L287%2C197.6z%22%2F%3E%3C%2Fsvg%3E') !important; /* Custom arrow */
+      background-repeat: no-repeat;
+      background-position: right 10px top 50%;
+      background-size: 12px;
+    }
+
+    .channel-select:focus {
+      outline: none;
+    }
+
+    select option {
+      backdrop-filter: blur(2px);
+      color: #000;
+      text-align: left;
+    }
+
+    .footer {
+      position: absolute;
+      bottom: 5px;
+      margin: 10px;
+      font-family: "Montserrat";
+      font-size: 14px;
+      font-weight: 200;
+    }
+
+    .powerbtn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #dcdcdc;
+      color: #0080ff;
+      font-size: 27px;
+      align-items: center;
+      justify-content: center;
+      margin: 10px;
+      position: absolute;
+      top: 34px;
+      right: 77px;
+      display: flex;
+      cursor: pointer;
+      border: none;
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); /* Animasi halus */
+    }
+
+    .band {
+      width: 40px;
+      height: 33px;
+      border-radius: 100px;
+      background: #dcdcdc;
+      color: #0080ff;
+      font-size: 22px;
+      font-weight: 600;
+      text-decoration: none;
+      align-items: center;
+      justify-content: center;
+      margin: 10px;
+      padding: 4px 30px;
+      position: absolute;
+      top: 34px;
+      right: 125px;
+      display: flex;
+      cursor: pointer;
+      border: none;
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); /* Animasi halus */
+    }
+
+    .powerbtn:hover {
+      background-color: #e6e6e6;
+    }
+
+    .dropbtn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #dcdcdc;
+      color: #0080ff;
+      font-size: 27px;
+      align-items: center;
+      justify-content: center;
+      margin: 10px;
+      position: absolute;
+      top: 34px;
+      right: 27px;
+      display: flex;
+      cursor: pointer;
+      border: none;
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); /* Animasi halus */
+    }
+
+    .dropbtn:hover {
+      background-color: #e6e6e6;
+    }
+
+    .dropdown {display: inline-block;}
+
+    .dropdown-content {
+      display: none; /* Default tertutup */
+      position: absolute;
+      right: 15px;
+      top: 55px;
+      background-color: var(--menu-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      min-width: 220px; /* Diperlebar supaya tidak sesak */
+      border-radius: 14px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+      z-index: 9999;
+      overflow: hidden;
+      padding: 6px 0; /* Padding atas bawah ala iOS */
+      border: 0.5px solid rgba(0,0,0,0.1);
+    }
+
+    /* Tampilkan saat Class .show aktif */
+    .dropdown-content.show {
+      display: block;
+      animation: iosMenuPop 0.2s ease-out;
+    }
+
+    /* Item di dalam Menu (Link atau Button) */
+    .dropdown-content a, 
+    .dropdown-content button {
+            display: flex;
+      align-items: center;
+      width: 100%;
+      padding: 14px 16px;
+      border: none;
+      background: none;
+      color: black;
+      font-family: inherit;
+      font-size: 16px;
+      text-decoration: none;
+      cursor: pointer;
+      text-align: left;
+      gap: 12px; /* Ini kunci agar icon dan tulisan tidak menjauh */
+    }
+
+    .dropdown-content a:last-child {
+      border-bottom: none;
+    }
+
+    /* Efek Klik (Highlite) */
+    .dropdown-content a:active, 
+    .dropdown-content button:active {
+      background-color: rgba(0, 0, 0, 0.1);
+    }
+
+    /* Khusus untuk tombol region yang punya tanda panah di kanan */
+    .region-btn {
+      display: flex !important;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      background: none;
+      border: none;
+      padding: 14px 16px; /* Disamakan dengan padding <a> Anda */
+      color      :       inherit;
+      font-family: inherit;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .region-btn span {
+      display: flex;
+      align-items: center;
+      gap: 12px; /* Jarak icon ke teks agar tidak menjauh */
+    }
+
+    .region-btn .fa-chevron-right {
+      transition: transform 0.3s ease;
+      font-size: 0.8rem;
+    }
+  
+    .submenu.open .region-btn .fa-chevron-right {
+      transform: rotate(90deg);
+    }
+  
+    .dropdown-content i {
+      width: 20px; /* Ukuran lebar tetap agar tulisan semua rata kiri */
+      text-align: center;
+    }
+    /* Styling untuk Submenu */
+    .submenu-content {
+      max-height: 0; /* Tertutup */
+      overflow: hidden;
+      opacity: 0;
+      background-color: rgba(0, 0, 0, 0.05); /* Sedikit gelap untuk membedakan level */
+      transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+    }
+
+    .submenu-content a {
+      padding-left: 48px !important; /* Biar menjorok ke dalam */
+      font-size: 15px !important;
+      opacity: 0.8;
+    }
+
+    .submenu-toggle {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .arrow {
+      font-size: 10px;
+      transition: transform 0.3s;
+    }
+
+    /* Class saat submenu dibuka */
+    .submenu.open .submenu-content {
+      max-height: 200px; /* Nilai cukup untuk menampung list kota */
+      opacity: 1;
+      display: block; /* Timpa display: none yang lama */
+    }
+
+    .submenu.open .arrow {
+      transform: rotate(180deg);
+    }
+    /* Animasi Muncul */
+    @keyframes iosMenuPop {
+      from { opacity: 0; transform: scale(0.9) translateY(-10px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .show {display: block;}
+
+    .prevent-select {
+      -webkit-user-select: none; /* Safari */
+      -ms-user-select: none; /* IE 10 and IE 11 */
+      user-select: none; /* Standard syntax */
+    }
+
+    ::-moz-selection { /* Code for Firefox */
+      color: #000;
+      background: $(maincolor);
+    }
+
+    ::selection {
+      color: #000; 
+      background: $(maincolor);
+    }
+
+    * {
+      -webkit-tap-highlight-color: transparent; /* Hapus warna biru saat tombol di-klik */
+      -webkit-touch-callout: none;              /* Matikan menu klik kanan/tahan di gambar */
+      user-select: none;                        /* Cegah user copy-paste teks agar terasa seperti app */
+    }
+
+    input, textarea {
+      user-select: text;                        /* Biarkan teks tetap bisa diisi di kolom input */
+    }
+
+    ::selection {
+      color: #000; 
+      background: $(maincolor);
+    }
+
+    .version-info {
+      text-align: center;
+      color: #999999; 
+      padding: 10px 16px; 
+      font-family: 'SF Pro Display';
+      font-size: small;
+    }
+        /* --- Media Queries untuk Orientasi Layar --- */
+    @media screen and (orientation: portrait) {
+        body {
+            padding-top: 52px;
+            justify-content: flex-start;
+            min-height: 86vh;
+        }
+    
+        .radio-branding {
+            position: absolute;
+            top: 0px;
+            left: 5px;
+            margin: 14px;
+        }
+     
+        .signal-dots {
+            top: 20px;
+            right: 43px;
+        }
+    
+        .band-type {
+            top: 100px;
+        }
+      
+        .screen {
+            width: 100%;
+        }
+      
+        .band {
+            width: 18px;
+            height: 22px;
+            border-radius: 100px;
+            font-size: 18px;
+            top: 10px;
+            right: 85px;
+        }
+      
+        .powerbtn {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            font-size: 18px;
+            top: 10px;
+            right: 45px;
+        }
+      
+        .dropbtn {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            font-size: 18px;
+            top: 10px;
+            right: 5px;
+        }
+     
+        .dropdown-content {
+            top: 52px;
+            right: 11px;
+        }
+    }
+        /* --- Penyempurnaan untuk pengguna iPhone 5/SE (2016) kebawah --- */
+    @media only screen and (max-width: 350px) {
+        .screen {
+            height: 188px;
+        }
+    
+        .freq-display {
+            font-size: 90px;
+        }
+    
+        .btn {
+            margin: 7px 19px;
+        }
+     
+        .dock {
+            width: 100%;
+        }
+    }
+        /* --- Cocok untuk dijadikan tape mobil --- */
+    @media only screen and (max-height: 479px) {
+        body {
+            justify-content: center;
+        }
+    
+        .radio-branding {
+            display: none;
+        }
+    
+        .screen {
+            height: 105px;
+            justify-content: center;
+        }
+    
+        .signal-dots {
+            top: 9px;
+            right: 33px;
+        }
+    
+        .band-type {
+            display: none;
+        }
+   
+        .freq-display {
+            margin-left: 30px;
+            text-align: left;
+            font-size: 90px;
+        }
+    
+        .channel-name {
+            margin-top: 0px;
+        }
+     
+        .dock {
+            margin-bottom: 13px;
+        }
+    
+        .band {
+            width: 15px;
+            height: 18px;
+            border-radius: 100px;
+            font-size: 14px;
+            top: 0px;
+            right: 70px;
+        }
+    
+        .powerbtn {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            font-size: 14px;
+            top: 0px;
+            right: 35px;
+        }
+    
+        .dropbtn {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            font-size: 14px;
+            top: 0px;
+            right: 0px;
+        }
+     
+        .dropdown-content {
+            top: 40px;
+            right: 17px;
+        }
+    
+        .footer {
+            display: none;
+        }
+    }
+  </style>
+</head>
+<body class="prevent-select">
+  <div class="radio-branding">Radio</div>
+  
+  <div class="dropdown">
+    <button onclick="menuDropdown()" class="dropbtn"><i class="fa fa-ellipsis-h"></i></button>
+    <div id="myDropdown" class="dropdown-content">
+       <div style="padding: 10px 16px; font-size: 12px; color: gray; font-weight: bold;">APPEARANCE</div>
+       <a onclick="setTheme('light')"><i class="fas fa-sun"></i><span>Light Mode</span></a>
+       <a onclick="setTheme('dark')"><i class="fas fa-moon"></i><span>Dark Mode</span></a>
+       <a onclick="setTheme('auto')"><i class="fas fa-magic"></i><span>Automatic</span></a>
+       <div style="border-top: 0.5px solid rgba(128,128,128,0.2); margin: 5px 0;"></div>
+       <a href="https://bugs-moonlightbayplus.blogspot.com/"><i class="fa fa-bug"></i><span>Report Bug</span></a>
+    </div>
+  </div>
+
+  <div class="controls-top">
+     <button class="powerbtn" id="powerBtn" onclick="togglePower()"><i class="fas fa-power-off"></i></button>
+  </div>
+  <a class="band" href="/radio">Band</a>
+
+  <div class="screen" id="lcdScreen">
+    <div class="lcd-header">
+      <span id="channelCountry">OFF</span>
+      <span id="channelTime">00:00</span>
+    </div>
+    
+    <div class="freq-display" id="freqDisplay">----<sup>kHz</sup></div>
+    
+    <div class="marquee-wrapper">
+        <div class="marquee-content channel-name" id="channelName">Power Off</div>
+    </div>
+
+    <div class="lcd-footer">
+      <div class="signal-dots" id="signalDots">
+        <div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+      </div>
+      <span id="bandTypeDisplay">DX MODE</span>
+    </div>
+  </div>
+
+  <div class="dock">
+    <div class="controls">
+      <button class="btn" onclick="prevChannel()"><i class="fas fa-backward"></i></button>
+      <button class="band-btn" onclick="nextBand()" id="bandDisplay"><i class="fas fa-radio"></i></button>
+      <button class="btn" onclick="nextChannel()"><i class="fas fa-forward"></i></button>
+    </div>
+  </div>
+
+  <audio id="radioPlayer"><source id="audioSource" src=""></audio>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.33/moment-timezone-with-data.min.js"></script>
+      <!-- Radio Kit -->
+  <script>
+    const radioChannels = [
+            // MW (Medium Wave - ~520 kHz to 1710 kHz)
+            { frequency: "540", name: "RRI PRO 4 BANDUNG", url: "https://stream-node0.rri.co.id/streaming/15/9015/rribandungpro4.mp3", country: "Indonesia", timezone: "Asia/Jakarta", band: "MW" },
+            { frequency: "585", name: "RRI Surabaya Pro 4", url: "https://stream-node0.rri.co.id/streaming/18/9018/rrisurabayapro4.mp3", country: "Indonesia", timezone: "Asia/Jakarta", band: "MW" },
+            { frequency: "630", name: "SAMHAN", url: "https://a8.siar.us/listen/samhanjakarta/radio.mp3", country: "Indonesia", timezone: "Asia/Jakarta", band: "MW" },
+            { frequency: "675", name: "ABC Kimberley", url: "https://mediaserviceslive.akamaized.net/hls/live/2038325/localbroome/masterhq.m3u8", country: "Australia", timezone: "Australia/Perth", band: "MW" },
+            { frequency: "684", name: "China National Radio 1", url: "https://piccpndali.v.myalicdn.com/audio/cctv2_2.m3u8", country: "China", timezone: "Asia/Shanghai", band: "MW" },
+            { frequency: "693", name: "MUARA", url: "https://ssg.streamingmurah.com:8778/stream/1/", country: "Indonesia", timezone: "Asia/Jakarta", band: "MW" },
+            { frequency: "702", name: "ABC Sydney", url: "https://mediaserviceslive.akamaized.net/hls/live/2038302/localsydney/masterhq.m3u8", country: "Australia", timezone: "Australia/Sydney", band: "MW" },
+            { frequency: "720", name: "RASIL", url: "https://ssg.streamingmurah.com:9300/;", country: "Indonesia", timezone: "Asia/Jakarta", band: "MW" },
+            { frequency: "738", name: "Radyo Pilipinas 1", url: "https://stream.zeno.fm/aq6rqr5m108uv", country: "Filipina", timezone: "Asia/Manila", band: "MW" },
+            { frequency: "774", name: "ABC Melbourne", url: "https://mediaserviceslive.akamaized.net/hls/live/2038300/localmelbourne/masterhq.m3u8", country: "Australia", timezone: "Australia/Melbourne", band: "MW" },
+            { frequency: "792", name: "AS SYAFIAH", url: "https://i.klikhost.com:9006/", country: "Indonesia", timezone: "Asia/Jakarta", band: "MW" },
+            { frequency: "801", name: "RRI Semarang Pro 4", country: "Indonesia", timezone: "Asia/Jakarta", band: "MW" },
+            { frequency: "855", name: "SWADESI JOSS", url: "https://stream.swadesifm.com/radio/8140/radio.mp3", country: "Indonesia", timezone: "Asia/Jakarta", band: "MW" },
+            { frequency: "864", name: "RRI Cirebon Pro 1", url: "https://stream-node2.rri.co.id/streaming/17/9317/rricirebonpro1.mp3", country: "Indonesia", timezone: "Asia/Jakarta", band: "MW" },
+            { frequency: "882", name: "DWIZ Manila", url: "https://dwizmanila.radioca.st/stream", country: "Filipina", timezone: "Asia/Manila", band: "MW" },
+            { frequency: "891", name: "RRI Malang", url: "https://stream-node2.rri.co.id/streaming/18/9218/rrimalangpro1.mp3", country: "Indonesia", timezone: "Asia/Jakarta", band: "MW" },
+            { frequency: "918", name: "Al Iman", url: "https://radioislamindonesia.com/aliman.mp3", country: "Indonesia", timezone: "Asia/Jakarta", band: "MW" },
+            { frequency: "954", name: "BAbe", url: "https://s5.alhastream.com/radio/8150/radio", country: "Indonesia", timezone: "Asia/Jakarta", band: "MW" },
+            { frequency: "1035", name: "RRI Bandar Lampung Pro 1", url: "https://stream-node1.rri.co.id/streaming/12/9112/rrilampungpro1.mp3", country: "Indonesia", timezone: "Asia/Jakarta", band: "MW" },
+            { frequency: "1080", name: "RRI Pro 1 Singaraja", url: "https://stream-node2.rri.co.id/streaming/40/9240/rrisingarajapro1.mp3", country: "Indonesia", timezone: "Asia/Makassar", band: "MW" },
+            { frequency: "1089", name: "RADIOQU BOGOR", url: "https://ssg.streamingmurah.com:8398/stream", country: "Indonesia", timezone: "Asia/Jakarta", band: "MW" },
+            { frequency: "1098", name: "RRI Sumenep Pro 1", url: "https://stream-node0.rri.co.id/streaming/18/9118/rrisumeneppro1.mp3", country: "Indonesia", timezone: "Asia/Jakarta", band: "MW" },
+            { frequency: "1107", name: "RRI PRO 4 YOGYAKARTA", url: "https://stream-node0.rri.co.id/streaming/17/9017/rrijogjapro4.mp3", country: "Indonesia", timezone: "Asia/Jakarta", band: "MW" },
+            { frequency: "1179", name: "Unisia", url: "https://stream.radiounisia.com/stream/1/", country: "Indonesia", timezone: "Asia/Jakarta", band: "MW" },
+            { frequency: "1188", name: "RRI Pro 4 Manado", url: "https://stream-node1.rri.co.id/streaming/40/9040/rrimanadopro4.mp3", country: "Indonesia", timezone: "Asia/Makassar", band: "MW" },
+            { frequency: "1206", name: "RRI Pro 4 Denpasar", url: "https://stream-node0.rri.co.id/streaming/21/9021/rridenpasarpro4.mp3", country: "Indonesia", timezone: "Asia/Makassar", band: "MW" },
+            { frequency: "1215", name: "RRI PRO 1 Samarinda", url: "https://stream-node1.rri.co.id/streaming/16/9116/rrisamarindapro1.mp3", country: "Indonesia", timezone: "Asia/Makassar", band: "MW" },
+            { frequency: "1242", name: "RRI PRO 1 BOGOR", url: "http://stream-node2.rri.co.id/streaming/19/9319/rribogorpro1.mp3", country: "Indonesia", timezone: "Asia/Jakarta", band: "MW" },
+            { frequency: "1278", name: "Sonata", url: "https://bagasraga.my.id/", country: "Indonesia", timezone: "Asia/Jakarta", band: "MW" },
+            { frequency: "1368", name: "ATTAQWA", url: "https://i.klikhost.com/8840/", country: "Indonesia", timezone: "Asia/Jakarta", band: "MW" },
+            { frequency: "1413", name: "RRI Sungaliat Pro 1", url: "https://stream-node2.rri.co.id/streaming/14/9314/rrisngliatpro1.mp3", country: "Indonesia", timezone: "Asia/Jakarta", band: "MW" },
+            { frequency: "1458", name: "Fajri Bandung", url: "https://ars.mitradio.com:8020/radio.mp3", country: "Indonesia", timezone: "Asia/Jakarta", band: "MW" },
+            { frequency: "1467", name: "Radio Muslim", url: "https://streaming.radiomuslim.com/;", country: "Indonesia", timezone: "Asia/Jakarta", band: "MW" },
+            { frequency: "1476", name: "TARBIYAH SUNNAH", url: "https://radioislamindonesia.com/tarbiyah.mp3", country: "Indonesia", timezone: "Asia/Jakarta", band: "MW" },
+            { frequency: "1530", name: "MASJID SUNDA KELAPA", url: "https://radiomsk1530am.com:8443/msk", country: "Indonesia", timezone: "Asia/Jakarta", band: "MW" },
+
+            // SW1 (Shortwave 1 - e.g., 60m band: 4.75 - 5.0 MHz -> 4750-5000 kHz)
+            { frequency: "3985", name: "Radio Slovakia International", url: "https://icecast.stv.livebox.sk/rsi_128.mp3", country: "Slovakia", timezone: "Europe/Bratislava", band: "SW1" },
+            { frequency: "4026", name: "Laser Hot Hits", url: "https://stream1.hippynet.co.uk:8067/stream", country: "Inggris", timezone: "Europe/London", band: "SW1" },
+            { frequency: "4750", name: "Bangladesh Betar", url: "https://stream.zeno.fm/8sn7cac604zuv", country: "Bangladesh", timezone: "Asia/Dhaka", band: "SW1" },
+            { frequency: "4755", name: "Voice of Indonesia", url: "https://stream-node0.rri.co.id/streaming/25/9125/voi.mp3", country: "Indonesia", timezone: "Asia/Jakarta", band: "SW1" },
+
+            // SW2 (Shortwave 2 - e.g., 49m band: 5.9 - 6.2 MHz -> 5900-6200 kHz)
+            { frequency: "5875", name: "BBC World Service", url: "http://stream.live.vc.bbcmedia.co.uk/bbc_world_service", country: "Inggris", timezone: "Europe/London", band: "SW2" },
+            { frequency: "5915", name: "Zambia NBC Radio 1", url: "https://eu6.fastcast4u.com/proxy/radio1", country: "Zambia", timezone: "Africa/Lusaka", band: "SW2" },
+            { frequency: "5960", name: "Mighty KBC Radio", url: "https://stream01.itego.nl/kbc-low", country: "Belanda", timezone: "Europe/Amsterdam", band: "SW2" },
+            { frequency: "6005", name: "Radio Slovakia International", url: "https://icecast.stv.livebox.sk/rsi_128.mp3", country: "Slovakia", timezone: "Europe/Bratislava", band: "SW2" },
+            { frequency: "6035", name: "BHUTAN BS", url: "https://radio.bbs.bt/mix-ch", country: "Bhutan", timezone: "Asia/Thimphu", band: "SW2"},
+            { frequency: "6045", name: "Telstar Radio 60", url: "https://stream.laut.fm/radio60", country: "Jerman", timezone: "Europe/Berlin", band: "SW2"},
+            { frequency: "6050", name: "RTM ASYIK", url: "https://28163.live.streamtheworld.com/ASYIK_FMAAC_SC", country: "Malaysia", timezone: "Asia/Kuala_Lumpur", band: "SW2" },
+            { frequency: "6070", name: "CFRX Toronto", url: "https://playerservices.streamtheworld.com/api/livestream-redirect/CFRBAMAAC_SC", country: "Kanada", timezone: "America/Toronto", band: "SW2" },
+            { frequency: "6085", name: "MI AMIGO International", url: "https://lion.radioca.st/;", country: "Jerman", timezone: "Europe/Berlin", band: "SW2"},
+            { frequency: "6110", name: "DELTA International", url: "https://ssl1.mediastreaming.it:9098/stream", country: "Italia", timezone: "Europe/Rome", band: "SW2"},
+            { frequency: "6135", name: "Radio New Zealand Int.", url: "https://radionz.streamguys1.com/pacific/pacific/playlist.m3u8", country: "Selandia Baru", timezone: "Pacific/Auckland", band: "SW2"},
+            { frequency: "6160", name: "WBCQ", url: "http://splatterbox.us/wbcq1", country: "Amerika Serikat", timezone: "America/New_York", band: "SW2" },
+
+            // SW3 (Shortwave 3 - e.g., 41m band: 7.2 - 7.6 MHz -> 7200-7600 kHz)
+            { frequency: "7210", name: "Voice of Korea", url: "https://listen7.myradio24.com/69366", country: "Korea Utara", timezone: "Asia/Pyongyang", band: "SW3" },
+            { frequency: "7220", name: "Voice of Vietnam", url: "https://stream.vovmedia.vn/vov5", country: "Vietnam", timezone: "Asia/Ho_Chi_Minh", band: "SW3" },
+            { frequency: "7245", name: "Voice of Tajik", url: "http://185.121.1.27:8000/otojik", country: "Tajikistan", timezone: "Asia/Dushanbe", band: "SW3"},
+            { frequency: "7255", name: "Voice of Nigeria", url: "https://stream.rcast.net/69233", country: "Nigeria", timezone: "Africa/Lagos", band: "SW3"},
+            { frequency: "7275", name: "Voice of Turkey", url: "https://radio-trtvotwest.medya.trt.com.tr/master_128.m3u8", country: "Turki", timezone: "Europe/Istanbul", band: "SW3" },
+            { frequency: "7315", name: "DABANGA", url: "https://stream.dabangasudan.org/", country: "Sudan", timezone: "Africa/Khartoum", band: "SW3"},
+
+            // SW4 (Shortwave 4 - e.g., 31m band: 9.4 - 9.9 MHz -> 9400-9900 kHz)
+            { frequency: "9410", name: "BBC World Service", url: "http://stream.live.vc.bbcmedia.co.uk/bbc_world_service", country: "Inggris", timezone: "Europe/London", band: "SW4" },
+            { frequency: "9500", name: "Ifrikya", url: "https://webradio.tda.dz/ifrikya_64K.mp3", country: "Aljazair", timezone: "Africa/Algiers", band: "SW4"},
+            { frequency: "9535", name: "China Radio International", url: "https://sk.cri.cn/am846.m3u8", country: "China", timezone: "Asia/Shanghai", band: "SW4" },
+            { frequency: "9550", name: "Radio Romania International", url: "https://stream4.srr.ro:8443/romania-rri1", country: "Romania", timezone: "Europe/Bucharest", band: "SW4" },
+            { frequency: "9835", name: "RTM SARAWAK", url: "https://playerservices.streamtheworld.com/api/livestream-redirect/SARAWAK_FMAAC.aac", country: "Malaysia", timezone: "Asia/Kuala_Lumpur", band: "SW4" },
+
+            // SW5 (Shortwave 5 - e.g., 25m band: 11.6 - 12.1 MHz -> 11600-12100 kHz)
+            { frequency: "11735", name: "Voice of Korea", url: "https://listen7.myradio24.com/69366", country: "Korea Utara", timezone: "Asia/Pyongyang", band: "SW5" },
+            { frequency: "11640", name: "The Voice of Iran", url: "https://live.iranradio.ir:8000/live-en.mp3", country: "Iran", timezone: "Asia/Tehran", band: "SW5" },
+            { frequency: "11665", name: "RTM WAi", url: "https://28093.live.streamtheworld.com/WAI_FM_BK.mp3", country: "Malaysia", timezone: "Asia/Kuala_Lumpur", band: "SW5" },
+            { frequency: "11815", name: "NHK World", url: "https://nhkworld-radio.akamaized.net/hls/live/2115820/nhkworld-radio-rs5/index_rs5.m3u8", country: "Jepang", timezone: "Asia/Tokyo", band: "SW5" },
+            { frequency: "11900", name: "Reach Beyond", url: "https://radio.wanderingsheep.net:8012/hopealive", country: "Selandia Baru", timezone: "Pacific/Auckland", band: "SW5" },
+            { frequency: "13660", name: "Far Eastern Broadcasting Associates", url: "https://listen.radioking.com/radio/557210/stream/618317", country: "India", timezone: "Asia/Kolkata", band: "SW5" },
+            { frequency: "15260", name: "All India Air Akashvani", url: "https://airhlspush.pc.cdn.bitgravity.com/httppush/hlspbaudio002/hlspbaudio00264kbps.m3u8", country: "India", timezone: "Asia/Kolkata", band: "SW5" },
+            { frequency: "15275", name: "Deutsche Welle", url: "https://dw.audiostream.io/dw/1027/mp3/64/dw08", country: "Jerman", timezone: "Europe/Berlin", band: "SW5" },
+            { frequency: "15520", name: "RNE Exterior", url: "https://rtvelivestream.rtve.es/rtvesec/rne/rne_re_main.m3u8", country: "Spanyol", timezone: "Europe/Madrid", band: "SW5" },
+            { frequency: "15765", name: "Mashaal Radio", url: "http://n08.radiojar.com/x9zb3ycpn3quv", country: "Pakistan", timezone: "Asia/Karachi", band: "SW5" },
+            { frequency: "17790", name: "Vaticana", url: "https://radio.vaticannews.va/stream-it", country: "Vatikan", timezone: "Europe/Vatican", band: "SW5" },
+        ];
+
+        let currentChannelIndex = 0;
+        let isPowerOn = false;
+        const bands = ["MW", "SW1", "SW2", "SW3", "SW4", "SW5"];
+        let currentBandIndex = 0;
+
+        // Element Selectors
+        const audioPlayer = document.getElementById("radioPlayer");
+        const audioSource = document.getElementById("audioSource");
+        const freqDisplay = document.getElementById("freqDisplay");
+        const channelName = document.getElementById("channelName");
+        const channelCountry = document.getElementById("channelCountry");
+        const channelTime = document.getElementById("channelTime");
+        const signalDots = document.querySelectorAll("#signalDots .dot");
+
+        // --- 1. POWER SYSTEM ---
+        function togglePower() {
+            isPowerOn = !isPowerOn;
+            const powerBtn = document.getElementById("powerBtn");
+            const screen = document.getElementById("lcdScreen");
+        
+            if (isPowerOn) {
+                powerBtn.style.color = "#0080ff";
+                screen.style.opacity = "1";
+                loadChannel(currentChannelIndex);
+            } else {
+                powerBtn.style.color = "#b0b0b0";
+                screen.style.opacity = "0.3";
+                audioPlayer.pause();
+                audioSource.src = "";
+                
+                // Reset LCD
+                freqDisplay.innerHTML = "----<sup>kHz</sup>";
+                channelName.textContent = "Turn on the Radio";
+                channelCountry.textContent = "";
+                updateSignalStrength(0);
+            }
+        }
+        
+        // --- 2. CHANNEL SYSTEM ---
+        function loadChannel(index) {
+            if (!isPowerOn) return;
+            
+            currentChannelIndex = index;
+            const channel = radioChannels[index];
+            
+            audioSource.src = channel.url;
+            audioPlayer.load();
+            audioPlayer.play().catch(() => { channelName.textContent = "Press Play"; });
+        
+            // Update Tampilan
+            freqDisplay.innerHTML = `${parseFloat(channel.frequency).toFixed(0)}<sup>kHz</sup>`;
+            channelName.textContent = channel.name;
+            channelCountry.textContent = channel.country
+            document.getElementById("bandDisplay").textContent = channel.band || "MW";
+            
+            updateMarquee();
+        }
+        
+        // --- 3. DX FEATURES (Signal & Clock) ---
+        function updateSignalStrength(level) {
+            signalDots.forEach((dot, i) => {
+                dot.style.background = i < level ? "#0080ff" : "#444";
+                dot.style.boxShadow = i < level ? "0 0 5px #0080ff" : "none";
+            });
+        }
+        
+        function updateClock() {
+            if (!isPowerOn) return;
+            const now = new Date();
+            channelTime.textContent = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+        }
+        
+        // Loop untuk Signal Meter (Simulasi Sinyal Berdasarkan Buffer)
+        setInterval(() => {
+            if (isPowerOn && audioPlayer.readyState > 0) {
+                const strength = Math.floor(Math.random() * 2) + 4; // Simulasi sinyal 4-5 bar jika play
+                updateSignalStrength(audioPlayer.paused ? 0 : strength);
+            }
+        }, 1000);
+        
+        setInterval(updateClock, 1000);
+        
+        // --- 4. NAVIGATION ---
+        function nextChannel() {
+            currentChannelIndex = (currentChannelIndex + 1) % radioChannels.length;
+            loadChannel(currentChannelIndex);
+        }
+        
+        function prevChannel() {
+            currentChannelIndex = (currentChannelIndex - 1 + radioChannels.length) % radioChannels.length;
+            loadChannel(currentChannelIndex);
+        }
+        
+        function nextBand() {
+            currentBandIndex = (currentBandIndex + 1) % bands.length;
+            document.getElementById("bandDisplay").textContent = bands[currentBandIndex];
+            // Opsional: Filter channel berdasarkan band yang dipilih
+        }
+        
+        // --- 5. MENU & THEME ---
+        function menuDropdown() { document.getElementById("myDropdown").classList.toggle("show"); }
+        function applyTheme() {
+        const savedTheme = localStorage.getItem('user-theme') || 'auto'; // Default ke auto jika kosong
+        const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        const body = document.body;
+        
+        if (savedTheme === 'dark') {
+                body.classList.add('dark-mode');
+    } else if (savedTheme === 'light') {
+        body.classList.remove('dark-mode');
+    } else {
+        // Logika Mode Otomatis (Ikuti Sistem)
+        if (systemDark) {
+            body.classList.add('dark-mode');
+        } else {
+            body.classList.remove('dark-mode');
+        }
+    }
+}
+
+// Jalankan fungsi saat script dibaca (Cegah kedipan putih saat refresh)
+applyTheme();
+
+// Fungsi yang dipanggil dari Tombol Menu
+function setTheme(mode) {
+    localStorage.setItem('user-theme', mode);
+    applyTheme();
+    // Tutup dropdown setelah memilih
+    const dropdown = document.getElementById("myDropdown");
+    if (dropdown) dropdown.classList.remove("show");
+}
+
+// Pantau jika user ganti tema sistem saat browser sedang terbuka
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+    if (localStorage.getItem('user-theme') === 'auto' || !localStorage.getItem('user-theme')) {
+        applyTheme();
+    }
+});
+  </script>
+</body>
+</html>
