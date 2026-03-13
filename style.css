@@ -73,7 +73,6 @@ nav.scrolled {
 
 /* Sembunyikan menu secara default */
 .dropdown-menu {
-    display: none;
     position: absolute;
     top: 100%; /* Muncul tepat di bawah navbar */
     left: 0;
@@ -94,7 +93,6 @@ nav.scrolled {
 
 /* Tampilkan saat di-hover (Desktop) */
 .nav-item.dropdown:hover .dropdown-menu {
-    display: block;
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
@@ -317,6 +315,7 @@ input, textarea {
 .card { padding: 1px; border-radius: 8px; font-size: 1.2rem; text-align: center; cursor: pointer; transition: 0.3s; }
 .card:hover { border: 1px solid var(--accent); transform: scale(1.05); }
 .card img { width: 100%; border-radius: 5px; }
+
 
 
 
